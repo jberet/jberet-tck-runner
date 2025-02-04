@@ -29,6 +29,7 @@ popd
 export BATCH_TCK_DIR=$(pwd)/jakarta.batch.official.tck-${BATCH_TCK_VER}
 export JBERET_PORTING_DIR=$(pwd)/jberet-tck-porting
 
+# Using the latest WildFly release.
 WFLY_VER=$(curl --silent -qI https://github.com/wildfly/wildfly/releases/latest | grep '^location.*' | tr -d '\r')
 WFLY_VER=${WFLY_VER##*/}
 
@@ -85,6 +86,7 @@ popd
 
 pushd $BATCH_TCK_DIR/runners/platform-arquillian
 mvn install
+echo "platform-arquillian running result: $?"
 popd
 
 # stop WildFly server

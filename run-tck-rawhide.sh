@@ -8,7 +8,6 @@ err_report() {
 
 trap 'err_report $LINENO' ERR
 
-
 # clone the upstream `batch-tck` and build it.
 rm -rf batch-tck
 git clone --depth 1 https://github.com/jakartaee/batch-tck.git
@@ -81,10 +80,3 @@ WFLY_VER="${WFLY_VER}" \
 JBERET_VER="${jberet_ver}" \
 BATCH_TCK_DIR="${BATCH_TCK_DIR}" \
 ./run-wildfly-ci.sh
-
-# disable the non-preview testings for now
-# test without the preview profile
-#WFLY_VER="${WFLY_VER}" \
-#JBERET_VER="${jberet_ver}" \
-#BATCH_TCK_DIR="${BATCH_TCK_DIR}" \
-#./run-wildfly-ci.sh

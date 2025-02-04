@@ -2,19 +2,10 @@
 
 set -x
 
-# todo: extract the following into a separate file.
-# and run with different profiles.
-
-# Using the provisioned WildFly instead.
-#WFLY_VER=$(curl --silent -qI https://github.com/wildfly/wildfly/releases/latest | grep '^location.*' | tr -d '\r')
-#WFLY_VER=${WFLY_VER##*/}
-#
-#wget https://github.com/wildfly/wildfly/releases/download/${WFLY_VER}/wildfly-${WFLY_VER}.zip
-#unzip wildfly-${WFLY_VER}.zip
-#
-#export JBOSS_HOME=$(pwd)/wildfly-${WFLY_VER}
 echo "start to run wildfly-ci test"
 pwd
+
+echo "build jberet-tck-runner itself with provisioned WildFly server"
 
 if [ "${USE_PROFILE}" != "" ]; then
   mvn clean install \
@@ -28,12 +19,6 @@ else
       '-Dversion.wildfly-maven-plugin=5.0.0.Final' \
       "-Dversion.jberet=${JBERET_VER}"
 fi
-
-#mvn clean install \
-#  "-Dversion.org.wildfly=${WFLY_VER}" \
-#  '-Dversion.wildfly-maven-plugin=5.0.0.Final' \
-#  "-Dversion.jberet=${jberet_ver}" \
-#  '-Pprovision-preview'
 
 export JBOSS_HOME=$(pwd)/target/wildfly
 
