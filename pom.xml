@@ -30,7 +30,7 @@
         <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
         <version.org.wildfly>34.0.1.Final</version.org.wildfly>
         <galleon.fork.embedded>true</galleon.fork.embedded>
-        <version.wildfly-maven-plugin>5.1.1.Final</version.wildfly-maven-plugin>
+        <version.wildfly-maven-plugin>5.1.2.Final</version.wildfly-maven-plugin>
         <server.test.feature.pack.groupId>org.wildfly</server.test.feature.pack.groupId>
         <server.test.feature.pack.artifactId>wildfly-ee-galleon-pack</server.test.feature.pack.artifactId>
         <version.jberet>3.0.0.Final</version.jberet>
