@@ -1,0 +1,25 @@
+wildfly-configuration:
+  subsystem:
+    ee:
+      global-modules: !list-add
+        - name: com.h2database.h2
+    batch-jberet:
+      jdbc-job-repository:
+        jdbc:
+          data-source: ExampleDS
+      default-job-repository: jdbc
+    datasources:
+      xa-data-source:
+        orderDB:
+          enabled: true
+          #jta: true
+          use-java-context: false
+          jndi-name: java:/jdbc/orderDB
+          driver-name: h2
+          xa-datasource-class: org.h2.jdbcx.JdbcDataSource
+          user-name: sa
+          password: sa
+          xa-datasource-properties:
+            URL:
+              # Note we must use single quotes around the SQL init script which is why we use double quotes for the string
+              value: "jdbc:h2:mem:test;INIT=runscript from '${project.build.testOutputDirectory}/sql/h2.ddl.jbatch-tck.sql';DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"

@@ -1,0 +1,15 @@
+# Maven Files
+target/
+.cache
+
+# IDE Files
+.idea
+**/.vscode/
+**/.settings
+**/.project
+**/.classpath
+**/.checkstyle
+**/.factorypath
+
+# macOS Files
+.DS_Store

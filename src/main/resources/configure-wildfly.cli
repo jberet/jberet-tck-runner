@@ -1,7 +1,0 @@
-embed-server --admin-only=true
-
-# Setup batch subsystem to use JDBC job repo.
-/subsystem=batch-jberet/jdbc-job-repository=jdbc:add(data-source=ExampleDS)
-/subsystem=batch-jberet:write-attribute(name=default-job-repository,value=jdbc)
-
-stop-embedded-server
