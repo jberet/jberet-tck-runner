@@ -1,0 +1,47 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: JBeret Jakarta Batch Testing
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *' # Every day at 00:00 UTC
+  workflow_dispatch:
+
+jobs:
+  run-tck:
+    name: Jakarta Batch TCK Java ${{ matrix.jdk-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk-version: [ '17', '21', '25' ]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK ${{ matrix.jdk-version }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.jdk-version }}
+          cache: 'maven'
+      - name: Run Rawhide Tests With Default WildFly
+        run: mvn -V -B -ntp clean install -fae
+      - uses: actions/upload-artifact@v5
+        if: failure()
+        with:
+          name: surefire-reports-${{ matrix.jdk-version }}
+          path: '**/failsafe-reports/*'
+      - uses: actions/upload-artifact@v5
+        if: failure()
+        with:
+          name: server-logs-${{ matrix.jdk-version }}
+          path: |
+            '**/server.log'
+            '**/client-tck.log'
+

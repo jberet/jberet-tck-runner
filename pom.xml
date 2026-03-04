@@ -10,192 +10,181 @@
  SPDX-License-Identifier: EPL-2.0
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>jberet-parent</artifactId>
-        <groupId>org.jberet</groupId>
-        <version>3.1.0.Final</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>jberet-tck-runner</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <parent>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>51</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>org.jberet.tck</groupId>
+    <artifactId>jberet-tck-runner-parent</artifactId>
+    <version>2.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>platform-runner</module>
+        <module>se-runner</module>
+    </modules>
 
     <properties>
-        <version.com.ibm.jbatch.tck.spi>2.1.5</version.com.ibm.jbatch.tck.spi>
-        <version.org.jberet.jberet-core>${project.parent.version}</version.org.jberet.jberet-core>
-        <jboss.home>${project.build.directory}${file.separator}wildfly</jboss.home>
-        <version.org.wildfly>34.0.1.Final</version.org.wildfly>
-        <galleon.fork.embedded>true</galleon.fork.embedded>
-        <version.wildfly-maven-plugin>5.1.2.Final</version.wildfly-maven-plugin>
-        <server.test.feature.pack.groupId>org.wildfly</server.test.feature.pack.groupId>
-        <server.test.feature.pack.artifactId>wildfly-ee-galleon-pack</server.test.feature.pack.artifactId>
-        <version.jberet>3.0.0.Final</version.jberet>
-        <skip.configuration>true</skip.configuration>
+
+        <!-- Require Java 17 -->
+        <jdk.min.version>17</jdk.min.version>
+
+        <version.org.jberet>3.1.0.Final</version.org.jberet>
+
+        <version.org.jboss.logging>3.6.1.Final</version.org.jboss.logging>
+        <version.org.jboss.logmanager>3.1.2.Final</version.org.jboss.logmanager>
+        <version.org.jboss.slf4j.slf4j-jboss-logging>1.2.1.Final</version.org.jboss.slf4j.slf4j-jboss-logging>
+        <version.org.jboss.slf4j.slf4j-jboss-logmanager>2.0.2.Final</version.org.jboss.slf4j.slf4j-jboss-logmanager>
+
+        <version.org.junit.jupitor>6.0.1</version.org.junit.jupitor>
+
+        <version.org.kohsuke.metainf-services>1.11</version.org.kohsuke.metainf-services>
+
+        <version.jakarta.batch.short>2.1</version.jakarta.batch.short>
+        <version.jakarta.batch.tck>2.1.5</version.jakarta.batch.tck>
+
+        <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+
+        <version.org.wildfly.security.elytron>2.6.6.Final</version.org.wildfly.security.elytron>
+
+        <!-- TCK Configuration -->
+        <tck.artifact.prefix>jakarta.batch.official.tck-${version.jakarta.batch.tck}</tck.artifact.prefix>
+        <tck.download.directory>${project.build.directory}/jakarta-batch-tck</tck.download.directory>
+        <tck.artifact.directory>${tck.download.directory}/${tck.artifact.prefix}/artifacts</tck.artifact.directory>
+        <tck.batch.url>https://download.eclipse.org/jakartaee/batch/${version.jakarta.batch.short}/jakarta.batch.official.tck-${version.jakarta.batch.tck}.zip</tck.batch.url>
+        <tck.batch.sha256>4bba9ce92f01d3055954c09333cd3c69bb0a878a6abe5fae6547134003db93d5</tck.batch.sha256>
     </properties>
 
-    <profiles>
-        <profile>
-            <id>provision-preview</id>
-            <!--            <activation>-->
-            <!--                <property>-->
-            <!--                    <name>provision.preview</name>-->
-            <!--                </property>-->
-            <!--            </activation>-->
-            <properties>
-                <server.test.feature.pack.groupId>org.wildfly</server.test.feature.pack.groupId>
-                <server.test.feature.pack.artifactId>wildfly-preview-feature-pack</server.test.feature.pack.artifactId>
-            </properties>
-        </profile>
-    </profiles>
-
-    <build>
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <version>${version.wildfly-maven-plugin}</version>
-                <configuration>
-                    <jboss-home>${jboss.home}</jboss-home>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>server-provisioning</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>provision</goal>
-                        </goals>
-                        <configuration>
-                            <provisioning-dir>${jboss.home}</provisioning-dir>
-                            <galleon-options>
-                                <jboss-fork-embedded>${galleon.fork.embedded}</jboss-fork-embedded>
-                            </galleon-options>
-                            <feature-packs>
-                                <feature-pack>
-                                    <groupId>${server.test.feature.pack.groupId}</groupId>
-                                    <artifactId>${server.test.feature.pack.artifactId}</artifactId>
-                                    <version>${version.org.wildfly}</version>
-                                    <inherit-configs>false</inherit-configs>
-                                    <included-configs>
-                                        <config>
-                                            <model>standalone</model>
-                                            <name>standalone-full.xml</name>
-                                        </config>
-                                        <config>
-                                            <model>standalone</model>
-                                            <name>standalone.xml</name>
-                                        </config>
-                                    </included-configs>
-                                    <excluded-packages>
-                                        <name>docs.schema</name>
-                                        <name>appclient</name>
-                                        <name>domain</name>
-                                    </excluded-packages>
-                                </feature-pack>
-                            </feature-packs>
-                            <channels>
-                                <channel>
-                                    <manifest>
-                                        <groupId>org.jberet</groupId>
-                                        <artifactId>jberet-channel-manifest</artifactId>
-                                        <version>${version.jberet}</version>
-                                    </manifest>
-                                </channel>
-                            </channels>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>configure-wildfly</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>execute-commands</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${skip.configuration}</skip>
-                            <jboss-home>${jboss.home}</jboss-home>
-                            <offline>true</offline>
-                            <scripts>
-                                <script>${project.build.outputDirectory}/configure-wildfly.cli</script>
-                            </scripts>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>wildfly-start</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>start</goal>
-                            <goal>deploy</goal>
-                        </goals>
-                        <configuration>
-                            <filename>${project.artifactId}</filename>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <phase>post-integration-test</phase>
-                        <id>wildfly-stop</id>
-                        <goals>
-                            <goal>shutdown</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*ITest*</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <testClassesDirectory>${project.build.testOutputDirectory}</testClassesDirectory>
-                    <includes>
-                        <include>**/*ITest*</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${version.org.junit.jupitor}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- We need this for compile time, but we should use the one on the server at runtime -->
+            <dependency>
+                <groupId>org.jberet</groupId>
+                <artifactId>jberet-core</artifactId>
+                <version>${version.org.jberet}</version>
+            </dependency>
+            <!-- We need this for compile time, but we should use the one on the server at runtime -->
+            <dependency>
+                <groupId>org.jberet</groupId>
+                <artifactId>jberet-se</artifactId>
+                <version>${version.org.jberet}</version>
+            </dependency>
+            <!-- This is here because of a dependency convergence with the JBoss Log Manager and JBoss Threads. Once that is
+                 sorted out, this dependency can be removed.
+            -->
+            <dependency>
+                <groupId>io.smallrye.common</groupId>
+                <artifactId>smallrye-common-constraint</artifactId>
+                <version>2.14.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.logging</groupId>
+                <artifactId>jboss-logging</artifactId>
+                <version>${version.org.jboss.logging}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.logmanager</groupId>
+                <artifactId>jboss-logmanager</artifactId>
+                <version>${version.org.jboss.logmanager}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jboss.logging</groupId>
+                        <artifactId>jboss-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.batch</groupId>
-            <artifactId>com.ibm.jbatch.tck.spi</artifactId>
-            <version>${version.com.ibm.jbatch.tck.spi}</version>
+            <groupId>org.kohsuke.metainf-services</groupId>
+            <artifactId>metainf-services</artifactId>
+            <version>${version.org.kohsuke.metainf-services}</version>
+            <!-- This is only needed at compile time -->
             <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>jakarta.ejb</groupId>
-            <artifactId>jakarta.ejb-api</artifactId>
+            <groupId>org.jboss.logmanager</groupId>
+            <artifactId>jboss-logmanager</artifactId>
+            <scope>test</scope>
         </dependency>
+        <!-- Used to bind slf4j to the jboss-logmanager -->
         <dependency>
-            <groupId>jakarta.annotation</groupId>
-            <artifactId>jakarta.annotation-api</artifactId>
+            <groupId>org.jboss.slf4j</groupId>
+            <artifactId>slf4j-jboss-logmanager</artifactId>
+            <version>${version.org.jboss.slf4j.slf4j-jboss-logmanager}</version>
+            <scope>test</scope>
         </dependency>
+        <!-- Required by jberet-core -->
         <dependency>
-            <groupId>org.jberet</groupId>
-            <artifactId>jberet-core</artifactId>
-            <version>${version.org.jberet.jberet-core}</version>
-            <scope>provided</scope>
+            <groupId>org.wildfly.security</groupId>
+            <artifactId>wildfly-elytron-security-manager</artifactId>
+            <version>${version.org.wildfly.security.elytron}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <configuration>
+                        <systemPropertyVariables>
+                            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                            <!-- Please note this is an undocumented and fragile property as it may not work in the future.
+                                 However, for now it is all we have to find the root project directory. -->
+                            <logging.configuration>file://${maven.multiModuleProjectDirectory}/logging.properties</logging.configuration>
+                            <client.log.dir>${project.build.directory}</client.log.dir>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.googlecode.maven-download-plugin</groupId>
+                    <artifactId>download-maven-plugin</artifactId>
+                    <version>1.13.0</version>
+                    <configuration>
+                        <url>${tck.batch.url}</url>
+                        <unpack>true</unpack>
+                        <outputDirectory>${tck.download.directory}</outputDirectory>
+                        <outputFileName>jakarta-batch-tck-${version.jakarta.batch.tck}.zip</outputFileName>
+                        <sha256>${tck.batch.sha256}</sha256>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.kohsuke.metainf-services</groupId>
+                            <artifactId>metainf-services</artifactId>
+                            <version>${version.org.kohsuke.metainf-services}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

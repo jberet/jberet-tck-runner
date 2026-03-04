@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (c) 2013 Red Hat, Inc. and/or its affiliates.
+
+ This program and the accompanying materials are made
+ available under the terms of the Eclipse Public License 2.0
+ which is available at https://www.eclipse.org/legal/epl-2.0/
+
+ SPDX-License-Identifier: EPL-2.0
+-->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.jberet.tck</groupId>
+        <artifactId>jberet-tck-runner-parent</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>jberet-se-tck-runner</artifactId>
+    <packaging>jar</packaging>
+
+    <properties>
+        <version.org.jboss.weld.weld>5.1.6.Final</version.org.jboss.weld.weld>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${version.org.junit.jupitor}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.batch</groupId>
+            <artifactId>com.ibm.jbatch.tck</artifactId>
+            <version>${version.jakarta.batch.tck}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.batch</groupId>
+            <artifactId>com.ibm.jbatch.tck.spi</artifactId>
+            <version>${version.jakarta.batch.tck}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.batch</groupId>
+            <artifactId>com.ibm.jbatch.tck.appbean</artifactId>
+            <version>${version.jakarta.batch.tck}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.batch</groupId>
+            <artifactId>jakarta.batch.reporting</artifactId>
+            <version>${version.jakarta.batch.tck}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jberet</groupId>
+            <artifactId>jberet-core</artifactId>
+            <version>${version.org.jberet}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jberet</groupId>
+            <artifactId>jberet-se</artifactId>
+            <version>${version.org.jberet}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-impl</artifactId>
+            <version>${version.org.jboss.weld.weld}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+            <version>${version.org.jboss.weld.weld}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+
+        <plugins>
+            <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>download-tck</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install-batch-tck</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>jakarta.batch.tck</groupId>
+                            <artifactId>com.ibm.jbatch.tck</artifactId>
+                            <version>${version.jakarta.batch.tck}</version>
+                            <packaging>jar</packaging>
+                            <file>${tck.artifact.directory}/com.ibm.jbatch.tck-${version.jakarta.batch.tck}.jar</file>
+                            <javadoc>${tck.artifact.directory}/com.ibm.jbatch.tck-${version.jakarta.batch.tck}-javadoc.jar</javadoc>
+                            <sources>${tck.artifact.directory}/com.ibm.jbatch.tck-${version.jakarta.batch.tck}-sources.jar</sources>
+                            <localRepositoryPath>${maven.repo.local}</localRepositoryPath>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-batch-tck-spi</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <groupId>jakarta.batch.tck</groupId>
+                            <artifactId>com.ibm.jbatch.tck.spi</artifactId>
+                            <version>${version.jakarta.batch.tck}</version>
+                            <packaging>jar</packaging>
+                            <file>${tck.artifact.directory}/com.ibm.jbatch.tck.spi-${version.jakarta.batch.tck}.jar</file>
+                            <javadoc>${tck.artifact.directory}/com.ibm.jbatch.tck.spi-${version.jakarta.batch.tck}-javadoc.jar</javadoc>
+                            <sources>${tck.artifact.directory}/com.ibm.jbatch.tck.spi-${version.jakarta.batch.tck}-sources.jar</sources>
+                            <localRepositoryPath>${maven.repo.local}</localRepositoryPath>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- We use the failsafe plugin instead -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>core-se</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                        <configuration>
+                            <dependenciesToScan>
+                                <dependency>jakarta.batch:com.ibm.jbatch.tck</dependency>
+                            </dependenciesToScan>
+                            <!-- Exclude transitive dependencies from the class we provide on the class path above from
+                                 the server.
+                             -->
+                            <classpathDependencyExcludes>
+                                <!-- This exclude describes how we want the classpath to look but this has no effect, we're going to use custom ShrinkWrap logic to build our Deployment for Arquillian -->
+                                <exclude>jakarta.batch:com.ibm.jbatch.tck.appbean</exclude>
+                            </classpathDependencyExcludes>
+                            <includesFile>${tck.artifact.directory}/batch-tck-impl-SE-core-suite-includes.txt</includesFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>appbean-se</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                        <configuration>
+                            <dependenciesToScan>
+                                <dependency>jakarta.batch:com.ibm.jbatch.tck.appbean</dependency>
+                            </dependenciesToScan>
+                            <includesFile>${tck.artifact.directory}/batch-tck-impl-appjoboperator-suite-includes.txt</includesFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
