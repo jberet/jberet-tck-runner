@@ -520,9 +520,15 @@
             </build>
         </profile>
         <profile>
+            <id>ee-10</id>
+            <properties>
+                <wildfly.feature.pack.artifactId>wildfly-ee-10-feature-pack</wildfly.feature.pack.artifactId>
+                <wildfly.channel.manifest.artifactId>wildfly-ee-10</wildfly.channel.manifest.artifactId>
+            </properties>
+        </profile>
+        <profile>
             <id>provision-preview</id>
             <properties>
-                <wildfly.feature.pack.groupId>org.wildfly</wildfly.feature.pack.groupId>
                 <wildfly.feature.pack.artifactId>wildfly-preview-feature-pack</wildfly.feature.pack.artifactId>
                 <wildfly.channel.manifest.artifactId>wildfly-preview</wildfly.channel.manifest.artifactId>
             </properties>
