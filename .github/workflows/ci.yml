@@ -22,7 +22,7 @@ jobs:
     name: Jakarta Batch SE TCK
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up JDKs
         uses: actions/setup-java@v4
         with:
@@ -59,7 +59,7 @@ jobs:
       matrix:
         profile: [ '', '-Pee-10', '-Pprovision-preview' ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up JDKs
         uses: actions/setup-java@v4
         with:
