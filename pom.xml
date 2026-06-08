@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>51</version>
+        <version>53</version>
         <relativePath/>
     </parent>
 
@@ -39,12 +39,12 @@
 
         <version.org.jberet>3.1.0.Final</version.org.jberet>
 
-        <version.org.jboss.logging>3.6.1.Final</version.org.jboss.logging>
-        <version.org.jboss.logmanager>3.1.2.Final</version.org.jboss.logmanager>
+        <version.org.jboss.logging>3.6.3.Final</version.org.jboss.logging>
+        <version.org.jboss.logmanager>3.2.2.Final</version.org.jboss.logmanager>
         <version.org.jboss.slf4j.slf4j-jboss-logging>1.2.1.Final</version.org.jboss.slf4j.slf4j-jboss-logging>
-        <version.org.jboss.slf4j.slf4j-jboss-logmanager>2.0.2.Final</version.org.jboss.slf4j.slf4j-jboss-logmanager>
+        <version.org.jboss.slf4j.slf4j-jboss-logmanager>2.1.0.Final</version.org.jboss.slf4j.slf4j-jboss-logmanager>
 
-        <version.org.junit.jupitor>6.0.1</version.org.junit.jupitor>
+        <version.org.junit.jupitor>6.1.0</version.org.junit.jupitor>
 
         <version.org.kohsuke.metainf-services>1.11</version.org.kohsuke.metainf-services>
 
@@ -52,6 +52,10 @@
         <version.jakarta.batch.tck>2.1.5</version.jakarta.batch.tck>
 
         <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+        <test.java.home>${java.home}</test.java.home>
+        <test.report.dir />
+        <surefire.reportsDirectory>${project.build.directory}/surefire-reports/${test.report.dir}</surefire.reportsDirectory>
+        <failsafe.reportsDirectory>${project.build.directory}/failsafe-reports/${test.report.dir}</failsafe.reportsDirectory>
 
         <version.org.wildfly.security.elytron>2.6.6.Final</version.org.wildfly.security.elytron>
 
@@ -149,6 +153,22 @@
                 <plugin>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <configuration>
+                        <jvm>${test.java.home}${file.separator}bin${file.separator}java</jvm>
+                        <reportsDirectory>${failsafe.reportsDirectory}</reportsDirectory>
+                        <systemPropertyVariables>
+                            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                            <!-- Please note this is an undocumented and fragile property as it may not work in the future.
+                                 However, for now it is all we have to find the root project directory. -->
+                            <logging.configuration>file://${maven.multiModuleProjectDirectory}/logging.properties</logging.configuration>
+                            <client.log.dir>${project.build.directory}</client.log.dir>
+                        </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <jvm>${test.java.home}${file.separator}bin${file.separator}java</jvm>
+                        <reportsDirectory>${surefire.reportsDirectory}</reportsDirectory>
                         <systemPropertyVariables>
                             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                             <!-- Please note this is an undocumented and fragile property as it may not work in the future.

@@ -26,15 +26,15 @@
     <packaging>jar</packaging>
 
     <properties>
-        <version.org.jboss.arquillian>1.10.0.Final</version.org.jboss.arquillian>
+        <version.org.jboss.arquillian>1.10.2.Final</version.org.jboss.arquillian>
         <version.org.jboss.arquillian.jakarta>10.0.0.Final</version.org.jboss.arquillian.jakarta>
-        <version.org.jboss.shrinkwrap>2.0.0-beta-2</version.org.jboss.shrinkwrap>
+        <version.org.jboss.shrinkwrap>2.0.0-beta-3</version.org.jboss.shrinkwrap>
 
         <version.org.kohsuke.metainf-services>1.11</version.org.kohsuke.metainf-services>
 
         <version.org.wildfly.arquillian>6.0.0.Alpha1</version.org.wildfly.arquillian>
 
-        <version.wildfly-maven-plugin>5.1.5.Final</version.wildfly-maven-plugin>
+        <version.wildfly-maven-plugin>6.0.0.Final</version.wildfly-maven-plugin>
 
         <!-- Provisioning properties -->
         <version.org.wildfly/>
@@ -51,13 +51,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${version.org.junit.jupitor}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian</groupId>
                 <artifactId>arquillian-bom</artifactId>
@@ -520,9 +513,15 @@
             </build>
         </profile>
         <profile>
+            <id>ee-10</id>
+            <properties>
+                <wildfly.feature.pack.artifactId>wildfly-ee-10-feature-pack</wildfly.feature.pack.artifactId>
+                <wildfly.channel.manifest.artifactId>wildfly-ee-10</wildfly.channel.manifest.artifactId>
+            </properties>
+        </profile>
+        <profile>
             <id>provision-preview</id>
             <properties>
-                <wildfly.feature.pack.groupId>org.wildfly</wildfly.feature.pack.groupId>
                 <wildfly.feature.pack.artifactId>wildfly-preview-feature-pack</wildfly.feature.pack.artifactId>
                 <wildfly.channel.manifest.artifactId>wildfly-preview</wildfly.channel.manifest.artifactId>
             </properties>

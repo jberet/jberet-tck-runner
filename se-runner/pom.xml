@@ -29,18 +29,6 @@
         <version.org.jboss.weld.weld>5.1.6.Final</version.org.jboss.weld.weld>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.junit</groupId>
-                <artifactId>junit-bom</artifactId>
-                <version>${version.org.junit.jupitor}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>jakarta.batch</groupId>

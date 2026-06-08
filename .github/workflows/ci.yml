@@ -1,12 +1,12 @@
 # This workflow will build a Java project with Maven
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: JBeret Jakarta Batch Testing
+name: JBeret Jakarta Batch TCK Testing
 
 on:
   pull_request:
     branches:
-      - main
+      - '**'
   push:
     branches:
       - main
@@ -14,34 +14,78 @@ on:
     - cron: '0 0 * * *' # Every day at 00:00 UTC
   workflow_dispatch:
 
+env:
+  MVN_CMD: './mvnw -V -B -fae'
+
 jobs:
-  run-tck:
-    name: Jakarta Batch TCK Java ${{ matrix.jdk-version }}
+  run-se-tck:
+    name: Jakarta Batch SE TCK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDKs
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          cache: 'maven'
+          # Please note the order here of having 25 last as that is the version we want to compile with
+          java-version: |
+            17
+            21
+            26
+            25
+      - name: Build and Test with Java 25
+        run: ${{ env.MVN_CMD }} clean install -am -pl se-runner
+      - name: Build and Test with Java 26
+        run: ${{ env.MVN_CMD }} verify -am -pl se-runner '-Dtest.java.home=${{env.JAVA_HOME_26_X64}}' '-Dtest.report.dir=java26'
+      - name: Build and Test with Java 21
+        run: ${{ env.MVN_CMD }} verify -am -pl se-runner '-Dtest.java.home=${{env.JAVA_HOME_21_X64}}' '-Dtest.report.dir=java21'
+      - name: Build and Test with Java 17
+        run: ${{ env.MVN_CMD }} verify -am -pl se-runner '-Dtest.java.home=${{env.JAVA_HOME_17_X64}}' '-Dtest.report.dir=java17'
+      - name: Upload test logs for failed run
+        uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: failure-reports
+          path: |
+            **/surefire-reports/**
+            **/failsafe-reports/**
+            **/*.log
+  run-ee-tck:
+    name: Jakarta Batch EE TCK
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        jdk-version: [ '17', '21', '25' ]
+        profile: [ '', '-Pee-10', '-Pprovision-preview' ]
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK ${{ matrix.jdk-version }}
+      - name: Set up JDKs
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: ${{ matrix.jdk-version }}
           cache: 'maven'
-      - name: Run Rawhide Tests With Default WildFly
-        run: mvn -V -B -ntp clean install -fae
-      - uses: actions/upload-artifact@v5
+          # Please note the order here of having 25 last as that is the version we want to compile with
+          java-version: |
+            17
+            21
+            26
+            25
+      - name: Build and Test with Java 25
+        run: ${{ env.MVN_CMD }} clean install -am -pl platform-runner
+      - name: Build and Test with Java 26
+        run: ${{ env.MVN_CMD }} verify -am -pl platform-runner '-Dtest.java.home=${{env.JAVA_HOME_26_X64}}' '-Dtest.report.dir=java26' ${{ matrix.profile }}
+      - name: Build and Test with Java 21
+        run: ${{ env.MVN_CMD }} verify -am -pl platform-runner '-Dtest.java.home=${{env.JAVA_HOME_21_X64}}' '-Dtest.report.dir=java21' ${{ matrix.profile }}
+      - name: Build and Test with Java 17
+        run: ${{ env.MVN_CMD }} verify -am -pl platform-runner '-Dtest.java.home=${{env.JAVA_HOME_17_X64}}' '-Dtest.report.dir=java17' ${{ matrix.profile }}
+      - name: Upload test logs for failed run
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
-          name: surefire-reports-${{ matrix.jdk-version }}
-          path: '**/failsafe-reports/*'
-      - uses: actions/upload-artifact@v5
-        if: failure()
-        with:
-          name: server-logs-${{ matrix.jdk-version }}
+          name: failure-reports${{ matrix.profile }}
           path: |
-            '**/server.log'
-            '**/client-tck.log'
+            **/surefire-reports/**
+            **/failsafe-reports/**
+            **/*.log
 
