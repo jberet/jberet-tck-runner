@@ -26,7 +26,7 @@
     <packaging>jar</packaging>
 
     <properties>
-        <version.org.jboss.weld.weld>5.1.6.Final</version.org.jboss.weld.weld>
+        <version.org.jboss.weld.weld>5.1.7.Final</version.org.jboss.weld.weld>
     </properties>
 
     <dependencies>
