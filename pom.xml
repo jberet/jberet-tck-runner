@@ -57,7 +57,7 @@
         <surefire.reportsDirectory>${project.build.directory}/surefire-reports/${test.report.dir}</surefire.reportsDirectory>
         <failsafe.reportsDirectory>${project.build.directory}/failsafe-reports/${test.report.dir}</failsafe.reportsDirectory>
 
-        <version.org.wildfly.security.elytron>2.9.1.Final</version.org.wildfly.security.elytron>
+        <version.org.wildfly.security.elytron>2.9.2.Final</version.org.wildfly.security.elytron>
 
         <!-- TCK Configuration -->
         <tck.artifact.prefix>jakarta.batch.official.tck-${version.jakarta.batch.tck}</tck.artifact.prefix>
