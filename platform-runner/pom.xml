@@ -324,7 +324,7 @@
             <plugin>
                 <groupId>jakarta.tck</groupId>
                 <artifactId>sigtest-maven-plugin</artifactId>
-                <version>2.6</version>
+                <version>2.7</version>
                 <configuration>
                     <sigfile>${tck.artifact.directory}/sigtest-1.6-batch.standalone.tck.sig-2.1-se11-OpenJDK-J9</sigfile>
                     <action>strictcheck</action>
