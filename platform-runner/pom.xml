@@ -34,7 +34,7 @@
 
         <version.org.wildfly.arquillian>6.0.0.Alpha1</version.org.wildfly.arquillian>
 
-        <version.wildfly-maven-plugin>6.0.0.Final</version.wildfly-maven-plugin>
+        <version.wildfly-maven-plugin>6.0.1.Final</version.wildfly-maven-plugin>
 
         <!-- Provisioning properties -->
         <version.org.wildfly/>
